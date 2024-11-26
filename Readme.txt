@@ -1,1 +1,0 @@
-Meu primeiro Aplicativo via Github Remoto pelo VSCode, utilizando APIs e frameworks FullStack atuais como Next.js(2024)
