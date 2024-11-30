@@ -1,12 +1,15 @@
 'use client'
 
+import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 
 export function AuthForm() {
     const form = useForm()
 
-    const handleSubmit = form.handleSubmit((data) => {
+    const handleSubmit = form.handleSubmit(async (data) => {
         console.log(data)
+
+        await signIn('email', {email: data.email})
     })
 
     return (
