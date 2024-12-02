@@ -30,7 +30,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <Toaster toastOptions={{duration: 8000}}/>
+        {
+          // Lembre-se de dar atenção as funções de cada arquivo no projeto, e que cada script de
+          // aplicação visual em React, precisa ser passado para o html (renderizado), e como o Toast
+          // foi anunciado em auth-form.tsx, precisamos renderizá-lo em alguma introdução <html>!
+        }
+        <Toaster/>
       </body>
     </html>
   );

@@ -21,11 +21,12 @@ export const {
         newUser: '/dashboard'
     },
 
-    callbacks: {
-        async signIn(params) {
-            
-        },
-    },
+    //Funções de interceptação!
+    //callbacks: {
+    //    async signIn(params) {
+    //        
+    //    },
+    //},
 
     providers: [EmailProvider({
         //Aqui pegamos as variáveis de ambiente

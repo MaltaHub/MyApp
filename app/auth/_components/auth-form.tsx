@@ -12,28 +12,27 @@ export function AuthForm() {
         //let notifier //seria o objeto resultado de toast.success mas aparentemente não funciona
 
         try {
+            const duration = 8000 // milisegundos
             console.log(data)
+
+            //chama função de login do NextAuth
             await signIn('email', { email: data.email, redirect: false })
 
-            //cria a notificação de sucesso sem duração
-            toast.success('Check your email for the magic link to login', { id: 'sucess', duration: 8000, position: 'bottom-center' });
+            //cria a notificação de sucesso, que não esatava mostrando pois o signIn redirecionava (Corrigido com 'redirect:false')
+            toast.success('Check your email for the magic link to login', {duration: duration, position: 'bottom-center' });
 
-            //define a função de espera síncrona com async/await utilizando Promise
-            const functionWait = (duration: number) => new Promise((resolve) => setTimeout(() => {
-                return console.log("Esperando",duration,"segundos!")
-            }, duration | 1000))
+            //função de espera assíncrona (se chamada, não para o fluxo do código)
+            async function setWait(duration?: number) {
+                if (!duration) duration = 1000
+                console.log("Esperando "+duration+" milisegundos!")
 
-            //função de espera e exclusão de notificação
-            async function setWait(duration: number) {
-                console.log("Começando espera!")
-                await functionWait(duration)
-
-                //apaga a notificação
-                toast.dismiss('sucess')
-                console.log("Notificação desligada!")
+                //espera utilizando Promise
+                new Promise(() => setTimeout(() => {
+                    console.log("Notificação encerrada!")
+                }, duration))
             }
+            setWait(duration)
 
-            setWait(8000)
         } catch (error) {
             toast.error('An error ocurred. Please try again.')
         }
