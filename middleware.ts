@@ -1,26 +1,45 @@
-// A hierarquia do diretório em NextJs importa (estude)
-
-import {getUrl} from './lib/get-url'
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-    const token = request.cookies.get('authjs.session-token')
-    const pathname = request.nextUrl.pathname
+export async function middleware(request: NextRequest) {
+  const token = request.cookies.get('authjs.session-token')?.value; // Obtém o token do cookie
+  const pathname = request.nextUrl.pathname;
 
-    //console.log({
-    //    token: token?.value,
-    //    pathname
-    //})
+  const baseUrl =
+    process.env.NEXTAUTH_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 
-    if (pathname === '/auth' && token) {
-        return NextResponse.redirect(new URL(getUrl('/dashboard')))
+  if (token) {
+    try {
+      const session = await fetch(`${baseUrl}/api/auth/session`, {
+        headers: {
+          Cookie: `authjs.session-token=${token}`,
+        },
+      }).then((res) => (res.ok ? res.json() : null));
+
+      if (session) {
+        // Sessão válida, redirecionar de /auth para /dashboard
+        if (pathname === '/auth') {
+          return NextResponse.redirect(new URL('/dashboard', request.url));
+        }
+        return NextResponse.next();
+      } else {
+        // Sessão inválida, remover cookie
+        const response = NextResponse.redirect(new URL('/auth', request.url));
+        response.cookies.delete('authjs.session-token'); // Remove o cookie do token inválido
+        return response;
+      }
+    } catch (error) {
+      console.error("Erro ao validar sessão:", error);
     }
+  }
 
-    if (pathname.includes('/dashboard') && !token) {
-        return NextResponse.redirect(new URL(getUrl('/auth')))
-    }
+  // Sem token, redirecionar para /auth se tentar acessar /dashboard
+  if (pathname.includes('/dashboard')) {
+    return NextResponse.redirect(new URL('/auth', request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
-}
+  matcher: ['/dashboard/:path*', '/auth'],
+};
