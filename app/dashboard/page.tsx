@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { auth } from "../services/auth";
-import { AlignVerticalJustifyStart, AlignVerticalSpaceAround } from "lucide-react";
+import { UserInfo } from "./_components/user-info";
 
 export default async function Page() {
     const session = await auth()
@@ -13,6 +12,7 @@ export default async function Page() {
                 <pre>User Session: {JSON.stringify(session?.user, null, 1)}</pre>
             </main>
             <span>{session?.user?.email}</span>
+            <UserInfo user={session?.user}/>
         </div>
     )
 }
