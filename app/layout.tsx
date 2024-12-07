@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { TopBar } from "./components/topbar";
+import { Footer } from "./components/footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,8 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <TopBar/>
         {children}
         {
           // Lembre-se de dar atenção as funções de cada arquivo no projeto, e que cada script de
@@ -36,6 +38,7 @@ export default function RootLayout({
           // foi anunciado em auth-form.tsx, precisamos renderizá-lo em alguma introdução <html>!
         }
         <Toaster/>
+        <Footer/>
       </body>
     </html>
   );
